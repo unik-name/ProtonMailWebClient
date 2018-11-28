@@ -7,6 +7,11 @@
         translate
         translate-comment="compose button in sidebar">Compose</button>
 
+    <div class="my-unik-name-container">
+        <label>My @unik-name</label>
+        <input type="text" name="my-unik-name" id="my-unik-name" placeholder="@unik-name" ng-model="myUnikName" ng-change="updateUnikName()">
+    </div>
+
     <ul class="menu sidebarApp-menu">
         <navigation-item
             class="sidebarApp-item"

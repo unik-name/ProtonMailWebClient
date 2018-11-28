@@ -148,10 +148,25 @@
     }
 }
 
-.autocompleteEmails-btn-remove {
+.autocompleteEmails-btn-remove{
     cursor: pointer;
     background: transparent;
     border: 0
+}
+
+.autocompleteEmails-btn-show-unik-name {
+    cursor: pointer;
+    background: #F35D5D;
+    color: #fff;
+    border-radius: 50%;
+    border: none;
+    margin-left: 5px;
+    &::before {
+        margin-left: 1px;
+    }
+    &.unik-check {
+        background: green;
+    }
 }
 
 .autocompleteEmails-btn-remove:focus,

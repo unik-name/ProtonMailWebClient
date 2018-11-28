@@ -6,6 +6,14 @@
     <span class="autocompleteEmails-label" tabindex="0">
         {{ email | labelAutocomplete:message }}
     </span>
+    <button ng-if="email.UnikName"
+        class="autocompleteEmails-btn-show-unik-name fa fa-user"
+        ng-class="{'unik-check': email.UnikName.security.unik}"
+        type="button"
+        title="Show UNIKARD"
+        aria-label="Show UnikName"
+        data-unikname="{{ email.UnikName.resolver.unikname }}">
+    </button>
     <button
         class="autocompleteEmails-btn-remove fa fa-times"
         type="button"

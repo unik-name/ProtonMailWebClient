@@ -1,0 +1,47 @@
+<div class="pm_modal showUnikNameModal-container" role="dialog">
+    <div class="modal-dialog">
+        <button
+            type="button"
+            ng-click="ctrl.cancel()"
+            aria-hidden="true"
+            title-translate="Close"
+            title-translate-context="Action"
+            class="fa fa-times close">
+        </button>
+
+        <div class="modal-content">
+            <div class="modal-body">
+                <h1 class="profile">
+                    <img class="unikname-profile" ng-src="{{ctrl.unikname.profile.picture}}" />
+                    @{{ ctrl.unikname.resolver.unikname }}
+                    <span class="unik-check fa fa-check" ng-if="ctrl.unikname.security.unik"></span>
+                    <span class="unik-check fa fa-times" ng-if="!ctrl.unikname.security.unik"></span>
+                </h1>
+                <div class="sections">
+                    <section class="security">
+                        <h2>Security</h2>
+                        <div>
+                            <label>Trust</label>
+                            <span class="stars">
+                                <span class="fa fa-star" ng-repeat="n in ctrl.unikRange(1,ctrl.unikname.security.trust)"></span>
+                                <span class="fa fa-star-o" ng-repeat="n in ctrl.unikRange(1, 5 - ctrl.unikname.security.trust)"></span>
+                            </span>
+                        </div>
+                    </section>
+                    <section class="support">
+                        <h2>Supported ID's</h2>
+                        <div class="supported">
+                            <span class="supportedType" ng-repeat="supportedType in ctrl.unikname.supportedTypes">
+                                <img ng-src="{{supportedType.image}}"/>
+                                <span>
+                                    {{ supportedType.label }}
+                                </span>
+                            </span>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay"></div>
+</div>

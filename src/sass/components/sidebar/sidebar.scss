@@ -242,6 +242,18 @@
     background: linear-gradient(to right, rgba($sidebar-active, 0), $sidebar-active 4px)
 }
 
+.my-unik-name-container {
+    label {
+        color: #fff;
+    }
+    input#my-unik-name {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    margin-bottom: 1rem;
+}
+
+
 .navigationItem-counter {
     flex: 1;
     margin-right: .3em;

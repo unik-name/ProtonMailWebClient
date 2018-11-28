@@ -1,6 +1,9 @@
 import _ from 'lodash';
 
 import { REGEX_EMAIL, MESSAGE_MAX_RECIPIENTS } from '../../constants';
+const UNIK_NAME_KEY_VALUE = 'UnikName';
+const UNIK_NAME_PREFIX = '@';
+const UNIK_NAME_LABEL_PREFIX = '#';
 
 /* @ngInject */
 function autocompleteEmails(
@@ -10,7 +13,10 @@ function autocompleteEmails(
     dispatchers,
     gettextCatalog,
     composerContactGroupSelection,
-    notification
+    notification,
+    $http,
+    userSettingsModel,
+    showUnikNameModal
 ) {
     const TAB_KEY = 9;
     const BACKSPACE_KEY = 8;
@@ -41,15 +47,16 @@ function autocompleteEmails(
      * @param  {String} value Input value
      * @return {Object}       {label, value}
      */
-    const getConfigEmailInput = (model, value = '') => {
+    const getConfigEmailInput = async (model, value = '') => {
         if (REGEX_EMAIL.test(value)) {
             const [config] = model.filterContact(value, true).list;
             // Can be undefined if there is no match
             if (config) {
                 return config;
             }
+        } else {
+            return await getUnikEmailConfig(value);
         }
-
         return { label: value, value };
     };
 
@@ -256,7 +263,11 @@ function autocompleteEmails(
                     resetValue(target, emails);
                     return;
                 }
-                emails.forEach((value) => model.add({ label: value, value }));
+                console.log('onInput autocompleteEmails : ', emails);
+                emails.forEach(async (value) => {
+                    let res = await getUnikEmailConfig(value);
+                    model.add(res);
+                });
                 syncModel();
                 return _rAF(() => ((awesomplete.input.value = ''), awesomplete.input.focus()));
             }
@@ -292,6 +303,17 @@ function autocompleteEmails(
                 return syncModel();
             }
 
+            if (target.classList.contains('autocompleteEmails-btn-show-unik-name')) {
+                console.log('click UN button show unikard', target);
+                const { unikname } = target.dataset;
+                let cachUnikName = model.getUnikname(unikname.trim());
+                if (cachUnikName && cachUnikName.UnikName) {
+                    showUnikNameModal.activate({
+                        params: { unikname: cachUnikName.UnikName }
+                    });
+                }
+            }
+
             /**
              * Click onto the empty input
              * Display the autocomplete with a list
@@ -310,7 +332,7 @@ function autocompleteEmails(
          * @param  {Event} e
          * @return {void}
          */
-        const onSubmit = (e) => {
+        const onSubmit = async (e) => {
             e.preventDefault();
             const { value, clear } = getFormValue(e.target);
 
@@ -318,7 +340,8 @@ function autocompleteEmails(
                 if (!checkMessageLimit()) {
                     return;
                 }
-                model.add(getConfigEmailInput(model, value));
+                let emailConfig = await getConfigEmailInput(model, value);
+                model.add(emailConfig);
                 clear();
                 syncModel();
                 awesomplete.close();
@@ -380,6 +403,7 @@ function autocompleteEmails(
             if (!checkMessageLimit()) {
                 return;
             }
+            console.log('replace opt: ', opt);
             model.add(opt);
             this.input.value = '';
             syncModel();
@@ -447,6 +471,56 @@ function autocompleteEmails(
             }
         )
     };
+
+    async function getUnikEmailConfig(value) {
+        if (value && value.indexOf(UNIK_NAME_PREFIX) === 0) {
+            // UNIK-NAME
+            try {
+                let resolvedEmail = await resolveEmailFromUnikName(value);
+                let email = resolvedEmail.data.resolver.address.trim();
+                let result = { label: value, value: email, unikname: resolvedEmail.data };
+                return result;
+            } catch (err) {
+                // TODO: Handle 401 403 status
+                switch (err.status) {
+                    case 401:
+                    case 403:
+                    case 404:
+                    default:
+                        console.error(err);
+                }
+            }
+        }
+        return { label: value, value };
+    }
+
+    function resolveEmailFromUnikName(unikname) {
+        let uniknameAndLabel = unikname.slice(1).split(UNIK_NAME_LABEL_PREFIX);
+        let headers = {
+            Pragma: undefined,
+            'Cache-Control': undefined,
+            'X-Requested-With': undefined,
+            'If-Modified-Since': undefined,
+            'x-pm-appversion': undefined,
+            'x-pm-uid': undefined,
+            'x-pm-apiversion': undefined
+        };
+
+        let unikNameFrom = userSettingsModel.get('UnikName');
+
+        if (unikNameFrom) {
+            headers['Authorization'] = `Basic ${unikNameFrom}`;
+        }
+
+        return $http({
+            method: 'GET',
+            url: `http://localhost:3000/uniknames/${uniknameAndLabel[0]}/labels/${
+                uniknameAndLabel[1] ? uniknameAndLabel[1] : 'default'
+            }/types/MAIL`,
+            withCredentials: false,
+            headers: headers
+        });
+    }
 }
 
 export default autocompleteEmails;

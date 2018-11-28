@@ -1,0 +1,71 @@
+.showUnikNameModal-container {
+    .modal-content {
+        .modal-body {
+            h2 {
+                font-size: 1.5em;
+                margin-bottom: 0.5rem;
+            }
+            .profile {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                font-size: 2.5em;
+                margin-bottom: 2rem;
+                img.unikname-profile {
+                    border-radius: 50%;
+                    width: 70px;
+                    height: 70px;
+                    margin-right: 1rem;
+                }
+                .unik-check::before {
+                    border: none;
+                    border-radius: 50%;
+                    background: darkred;
+                    color: #fff;
+                    padding: 3px;
+                    font-size: 0.4em;
+                    margin-bottom: 0.5em;
+                    margin-left: 0.5rem;
+                    display: inline-block;
+                }
+                .unik-check.fa-check::before {
+                    background: green;
+                }
+            }
+            .sections {
+                display: flex;
+                flex-direction: row;
+                section {
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1;
+                    &.security {
+                        > div {
+                            padding: 0 1rem;
+                        }
+
+                    }
+                    &.support {
+                        .supported {
+                            padding: 0 1rem;
+                            display: flex;
+                            flex-direction: column;
+                            .supportedType {
+                                display: flex;
+                                flex-direction: row;
+                                margin: 0.25rem 0;
+                                align-items: center;
+                                img {
+                                    margin-right: 1rem;
+                                }
+                                span {
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

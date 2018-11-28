@@ -11,3 +11,16 @@
         background-color: $primary;
     }
 }
+
+.storageProgress-container {
+    .power-by-unik-name {
+        a, a:hover, a:focus, a:visited {
+            color: #fff;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+        margin-bottom: 1rem;
+    }
+}

@@ -72,7 +72,8 @@ export const defaultDomainsList = (value = '') => {
  * @param  {String} keyValue  Custom key configured as a return value
  * @return {Object}       {Name, Address}
  */
-export const formatNewEmail = (label = '', value = '', keyValue = DEFAULT_KEY_VALUE) => {
+export const formatNewEmail = (label = '', value = '', keyValue = DEFAULT_KEY_VALUE, unikname = undefined) => {
+    console.log('FORMAT NEW EMAIL : ', label, value, keyValue);
     // We need to clean the label because the one comming from the autocomplete can contains some unicode
     const cleanLabel = unicodeTag(label, 'reverse');
 
@@ -84,7 +85,7 @@ export const formatNewEmail = (label = '', value = '', keyValue = DEFAULT_KEY_VA
         return { Name, Address };
     }
 
-    return { Name: label.trim(), [keyValue]: value.trim() };
+    return { Name: label.trim(), [keyValue]: value.trim(), UnikName: unikname };
 };
 
 /* @ngInject */
@@ -299,11 +300,12 @@ function autocompleteEmailsModel($injector, checkTypoEmails, dispatchers, userTy
          * @param  {String} options.value Value === email
          * @return {Number}
          */
-        const add = ({ label, value = '' } = {}) => {
+        const add = ({ label, value = '', unikname = undefined } = {}) => {
             // Advance use case, you can set the value to be an Object
+            console.log('ADD !!', label, value);
             const isStringValue = typeof value === 'string';
             const val = isStringValue ? value : value.value;
-            const data = formatNewEmail(CACHE.LABELS[label] || label, val, keyValue);
+            const data = formatNewEmail(CACHE.LABELS[label] || label, val, keyValue, unikname);
             addEmail({ ...data, ...(!isStringValue && value.data) });
         };
 
@@ -315,6 +317,23 @@ function autocompleteEmailsModel($injector, checkTypoEmails, dispatchers, userTy
         const remove = (cb) => ((LOCAL_CACHE.list = LOCAL_CACHE.list.filter(cb)), LOCAL_CACHE.list);
         const removeItem = (key) => remove(({ [keyValue]: removeKey }) => removeKey !== key);
         const removeByAddress = (Address) => remove(({ Address: otherAddress }) => otherAddress !== Address);
+
+        const getUnikname = (unikname) => {
+            let cachedUnikname = undefined;
+            let unikNames = LOCAL_CACHE.list.filter((cacheElement) => {
+                console.log(
+                    cacheElement,
+                    cacheElement.UnikName,
+                    cacheElement.UnikName.resolver.unikname,
+                    cacheElement.UnikName.resolver.unikname === unikname
+                );
+                return cacheElement.UnikName && cacheElement.UnikName.resolver.unikname === unikname;
+            });
+            if (unikNames.length > 0) {
+                cachedUnikname = unikNames[0];
+            }
+            return cachedUnikname;
+        };
 
         /**
          * Update an address. Ensures that the list is still unique. If new address already exists, the old address will be removed.
@@ -406,7 +425,8 @@ function autocompleteEmailsModel($injector, checkTypoEmails, dispatchers, userTy
             clear,
             exist,
             debug,
-            refresh
+            refresh,
+            getUnikname
         };
     };
 }
