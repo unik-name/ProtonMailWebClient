@@ -161,9 +161,6 @@
     border-radius: 50%;
     border: none;
     margin-left: 5px;
-    &::before {
-        margin-left: 1px;
-    }
     &.unik-check {
         background: green;
     }

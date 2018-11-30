@@ -318,7 +318,7 @@ function autocompleteEmailsModel($injector, checkTypoEmails, dispatchers, userTy
         const removeItem = (key) => remove(({ [keyValue]: removeKey }) => removeKey !== key);
         const removeByAddress = (Address) => remove(({ Address: otherAddress }) => otherAddress !== Address);
 
-        const getUnikname = (unikname) => {
+        const getUnikname = (unikname, label) => {
             let cachedUnikname = undefined;
             let unikNames = LOCAL_CACHE.list.filter((cacheElement) => {
                 console.log(
@@ -327,7 +327,11 @@ function autocompleteEmailsModel($injector, checkTypoEmails, dispatchers, userTy
                     cacheElement.UnikName.resolver.unikname,
                     cacheElement.UnikName.resolver.unikname === unikname
                 );
-                return cacheElement.UnikName && cacheElement.UnikName.resolver.unikname === unikname;
+                return (
+                    cacheElement.UnikName &&
+                    cacheElement.UnikName.resolver.unikname === unikname &&
+                    cacheElement.UnikName.resolver.label === label
+                );
             });
             if (unikNames.length > 0) {
                 cachedUnikname = unikNames[0];

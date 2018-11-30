@@ -305,8 +305,8 @@ function autocompleteEmails(
 
             if (target.classList.contains('autocompleteEmails-btn-show-unik-name')) {
                 console.log('click UN button show unikard', target);
-                const { unikname } = target.dataset;
-                let cachUnikName = model.getUnikname(unikname.trim());
+                const { unikname, label } = target.dataset;
+                let cachUnikName = model.getUnikname(unikname.trim(), label);
                 if (cachUnikName && cachUnikName.UnikName) {
                     showUnikNameModal.activate({
                         params: { unikname: cachUnikName.UnikName }
