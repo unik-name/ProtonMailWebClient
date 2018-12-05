@@ -1,9 +1,6 @@
 import _ from 'lodash';
 
 import { REGEX_EMAIL, MESSAGE_MAX_RECIPIENTS } from '../../constants';
-const UNIK_NAME_KEY_VALUE = 'UnikName';
-const UNIK_NAME_PREFIX = '@';
-const UNIK_NAME_LABEL_PREFIX = '#';
 
 /* @ngInject */
 function autocompleteEmails(
@@ -14,9 +11,8 @@ function autocompleteEmails(
     gettextCatalog,
     composerContactGroupSelection,
     notification,
-    $http,
-    userSettingsModel,
-    showUnikNameModal
+    showUnikNameModal,
+    uniknameService
 ) {
     const TAB_KEY = 9;
     const BACKSPACE_KEY = 8;
@@ -55,7 +51,7 @@ function autocompleteEmails(
                 return config;
             }
         } else {
-            return await getUnikEmailConfig(value);
+            return await uniknameService.getUnikEmailConfig(value);
         }
         return { label: value, value };
     };
@@ -265,7 +261,7 @@ function autocompleteEmails(
                 }
                 console.log('onInput autocompleteEmails : ', emails);
                 emails.forEach(async (value) => {
-                    let res = await getUnikEmailConfig(value);
+                    let res = await uniknameService.getUnikEmailConfig(value);
                     model.add(res);
                 });
                 syncModel();
@@ -292,7 +288,7 @@ function autocompleteEmails(
             cache.remove(Address);
         };
 
-        const onClick = ({ target }) => {
+        const onClick = async ({ target }) => {
             // Reset autocomplete to work only after 1 letter
             awesomplete.minChars = 1;
 
@@ -304,14 +300,12 @@ function autocompleteEmails(
             }
 
             if (target.classList.contains('autocompleteEmails-btn-show-unik-name')) {
-                console.log('click UN button show unikard', target);
                 const { unikname, label } = target.dataset;
-                let cachUnikName = model.getUnikname(unikname.trim(), label);
-                if (cachUnikName && cachUnikName.UnikName) {
-                    showUnikNameModal.activate({
-                        params: { unikname: cachUnikName.UnikName }
-                    });
-                }
+
+                let unikard = await uniknameService.getUnikard(`${unikname}${label ? `#${label}` : ''}`);
+                showUnikNameModal.activate({
+                    params: { unikname: unikname, label: label, unikard: unikard }
+                });
             }
 
             /**
@@ -471,56 +465,6 @@ function autocompleteEmails(
             }
         )
     };
-
-    async function getUnikEmailConfig(value) {
-        if (value && value.indexOf(UNIK_NAME_PREFIX) === 0) {
-            // UNIK-NAME
-            try {
-                let resolvedEmail = await resolveEmailFromUnikName(value);
-                let email = resolvedEmail.data.resolver.address.trim();
-                let result = { label: value, value: email, unikname: resolvedEmail.data };
-                return result;
-            } catch (err) {
-                // TODO: Handle 401 403 status
-                switch (err.status) {
-                    case 401:
-                    case 403:
-                    case 404:
-                    default:
-                        console.error(err);
-                }
-            }
-        }
-        return { label: value, value };
-    }
-
-    function resolveEmailFromUnikName(unikname) {
-        let uniknameAndLabel = unikname.slice(1).split(UNIK_NAME_LABEL_PREFIX);
-        let headers = {
-            Pragma: undefined,
-            'Cache-Control': undefined,
-            'X-Requested-With': undefined,
-            'If-Modified-Since': undefined,
-            'x-pm-appversion': undefined,
-            'x-pm-uid': undefined,
-            'x-pm-apiversion': undefined
-        };
-
-        let unikNameFrom = userSettingsModel.get('UnikName');
-
-        if (unikNameFrom) {
-            headers['Authorization'] = `Basic ${unikNameFrom}`;
-        }
-
-        return $http({
-            method: 'GET',
-            url: `http://localhost:3000/uniknames/${uniknameAndLabel[0]}/labels/${
-                uniknameAndLabel[1] ? uniknameAndLabel[1] : 'default'
-            }/types/MAIL`,
-            withCredentials: false,
-            headers: headers
-        });
-    }
 }
 
 export default autocompleteEmails;

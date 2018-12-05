@@ -41,6 +41,7 @@ import expirationModal from './modals/expirationModal';
 import editComposerContactGroupModal from './modals/editComposerContactGroupModal';
 import composerContactGroupSelection from './factories/composerContactGroupSelection';
 import showUnikNameModal from './modals/showUnikNameModal';
+import uniknameService from './services/uniknameService';
 
 export default angular
     .module('proton.composer', ['proton.labels'])
@@ -86,4 +87,5 @@ export default angular
     .factory('sendMessage', sendMessage)
     .factory('sendPreferences', sendPreferences)
     .factory('expirationModal', expirationModal)
-    .factory('validateMessage', validateMessage).name;
+    .factory('validateMessage', validateMessage)
+    .service('uniknameService', uniknameService).name;

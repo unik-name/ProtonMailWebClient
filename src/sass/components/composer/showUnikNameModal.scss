@@ -1,67 +1,109 @@
 .showUnikNameModal-container {
     .modal-content {
         .modal-body {
+            display: flex;
+            flex-direction: column;
+            background-color: #2a2b82;
+            color: #fff;
+            padding: 0px !important;
             h2 {
                 font-size: 1.5em;
                 margin-bottom: 0.5rem;
+                color: #fff;
             }
-            .profile {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                font-size: 2.5em;
-                margin-bottom: 2rem;
-                img.unikname-profile {
-                    border-radius: 50%;
-                    width: 70px;
-                    height: 70px;
-                    margin-right: 1rem;
-                }
-                .unik-check::before {
-                    border: none;
-                    border-radius: 50%;
-                    background: darkred;
-                    color: #fff;
-                    padding: 3px;
-                    font-size: 0.4em;
-                    margin-bottom: 0.5em;
-                    margin-left: 0.5rem;
-                    display: inline-block;
-                }
-                .unik-check.fa-check::before {
-                    background: green;
-                }
-            }
-            .sections {
-                display: flex;
-                flex-direction: row;
-                section {
+            .title {
+                background-color: #201c60;
+                padding: 1.5rem;
+                h1.profile {
                     display: flex;
-                    flex-direction: column;
-                    flex: 1;
-                    &.security {
-                        > div {
-                            padding: 0 1rem;
+                    flex-direction: row;
+                    align-items: center;
+                    font-size: 2.5em;
+                    margin-bottom: 0;
+                    color: #fff;
+                    overflow: visible;
+                    img.unikname-profile {
+                        border-radius: 50%;
+                        width: 100px;
+                        height: 100px;
+                        margin-right: 1rem;
+                    }
+
+                    .profile_picture {
+                        position: relative;
+                        &:after {
+                            position: absolute;
+                            bottom: -8px;
+                            right: 8px;
+                            content: '👤';
+                            font-weight: bold;
+                            font-size: 0.8em;
+                            color: #fff;
+                        }
+                        &.indiv:after {
+                            content: '👤';
                         }
 
+                        &.team:after {
+                            content: '👥';
+                        }
+
+                        &.corp:after {
+                            content: '🏢';
+                        }
+
+                        &.gov:after {
+                            content: '🌍';
+                        }
                     }
-                    &.support {
-                        .supported {
-                            padding: 0 1rem;
+                }
+            }
+
+            .content {
+                padding: 1.5rem;
+                .stars {
+                    .fa-star:before {
+                        margin-left: 0.25rem;
+                    }
+                }
+                .support {
+                    margin-top: 1rem;
+                    border-top: 2px solid rgba(211, 211, 211, 0.3);
+                    padding-top: 1rem;
+                    .supportedTypes {
+                        display: flex;
+                        align-items: center;
+                        flex-direction: row;
+                        flex-flow: row wrap;
+                        .supportedType {
+                            background-color: #fff;
+                            color: #000;
+                            margin: 0.5rem 0rem;
+                            padding: 0.25rem 0.5rem;
+                            border-radius: 30px;
                             display: flex;
-                            flex-direction: column;
-                            .supportedType {
-                                display: flex;
-                                flex-direction: row;
-                                margin: 0.25rem 0;
-                                align-items: center;
-                                img {
-                                    margin-right: 1rem;
-                                }
-                                span {
-                                    font-weight: bold;
-                                }
+                            flex-direction: row;
+                            justify-content: flex-start;
+                            align-items: center;
+                            margin-right: 1rem;
+                            img {
+                                margin-right: 0.5rem;
                             }
+                            span {
+                                font-weight: bold;
+                            }
+                            &,
+                            &:focus,
+                            &:visited,
+                            &:active {
+                                text-decoration-line: none;
+                                color: #000;
+                            }
+                            
+                        }
+                        a.supportedType:hover {
+                            background-color: lightgray;
+                            box-shadow: 0px 1px 10px 0px #fff;
                         }
                     }
                 }

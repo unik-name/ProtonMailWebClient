@@ -6,39 +6,82 @@
             aria-hidden="true"
             title-translate="Close"
             title-translate-context="Action"
-            class="fa fa-times close">
-        </button>
+            class="fa fa-times close"
+        ></button>
 
         <div class="modal-content">
             <div class="modal-body">
-                <h1 class="profile">
-                    <img class="unikname-profile" ng-src="{{ctrl.unikname.profile.picture}}" />
-                    @{{ ctrl.unikname.resolver.unikname }}
-                    <span class="unik-check fa fa-check" ng-if="ctrl.unikname.security.unik"></span>
-                    <span class="unik-check fa fa-times" ng-if="!ctrl.unikname.security.unik"></span>
-                </h1>
-                <div class="sections">
-                    <section class="security">
-                        <h2>Security</h2>
-                        <div>
-                            <label>Trust</label>
+                <div class="title">
+                    <h1 class="profile">
+                        <span class="profile_picture {{ctrl.unikard.type}}">
+                            <img class="unikname-profile" ng-src="{{ctrl.unikard.profile.picture}}" />
+                        </span>
+                        <span>
+                                @{{ ctrl.explicite }}
+                        </span>
+                    </h1>
+                </div>
+                <div class="content">
+                    <div>
+                        <h2>
+                            <label>Trust score:&nbsp;</label>
                             <span class="stars">
-                                <span class="fa fa-star" ng-repeat="n in ctrl.unikRange(1,ctrl.unikname.security.trust)"></span>
-                                <span class="fa fa-star-o" ng-repeat="n in ctrl.unikRange(1, 5 - ctrl.unikname.security.trust)"></span>
+                                <span
+                                    class="fa fa-star"
+                                    ng-repeat="n in ctrl.unikRange(1,ctrl.unikard.security.trust)"
+                                ></span>
+                                <span
+                                    class="fa fa-star-o"
+                                    ng-repeat="n in ctrl.unikRange(1, 5 - ctrl.unikard.security.trust)"
+                                ></span>
+                            </span>
+                        </h2>
+                    </div>
+                    <div class="support">
+                        <h2>Supported types<span ng-if="ctrl.label && ctrl.label !== 'default'">&nbsp;(by #{{ctrl.label}})</span></h2>
+                        <div class="supportedTypes">
+                            <span ng-repeat="supportedType in ctrl.unikard.supportedTypes">
+                                <ng-switch on="supportedType.type">
+                                    <a
+                                        class="supportedType"
+                                        ng-switch-when="MAIL"
+                                        ng-href="mailto:{{supportedType.data}}"
+                                    >
+                                        <img ng-src="{{supportedType.image}}" /> <span> {{ supportedType.type }} </span>
+                                    </a>
+                                    <a
+                                        class="supportedType"
+                                        ng-switch-when="PHONE"
+                                        ng-href="tel:{{supportedType.data}}"
+                                    >
+                                        <img ng-src="{{supportedType.image}}" /> <span> {{ supportedType.type }} </span>
+                                    </a>
+                                    <a
+                                        class="supportedType"
+                                        ng-switch-when="ADDRESS"
+                                        ng-href="http://maps.google.com/?q={{supportedType.data}}"
+                                        target="_blank"
+                                        rel="noopener"
+                                    >
+                                        <img ng-src="{{supportedType.image}}" /> <span> {{ supportedType.type }} </span>
+                                    </a>
+                                    <a
+                                        class="supportedType"
+                                        ng-switch-when="WEB"
+                                        ng-href="{{supportedType.data}}"
+                                        target="_blank"
+                                        target="_blank"
+                                        rel="noopener"
+                                    >
+                                        <img ng-src="{{supportedType.image}}" /> <span> {{ supportedType.type }} </span>
+                                    </a>
+                                    <span class="supportedType" ng-switch-default data-copy="{{supportedType.data}}" ng-click="ctrl.copy('supportedType', supportedType.data)">
+                                        <img ng-src="{{supportedType.image}}" /> <span> {{ supportedType.type }} </span>
+                                    </span>
+                                </ng-switch>
                             </span>
                         </div>
-                    </section>
-                    <section class="support">
-                        <h2>Supported ID's</h2>
-                        <div class="supported">
-                            <span class="supportedType" ng-repeat="supportedType in ctrl.unikname.supportedTypes">
-                                <img ng-src="{{supportedType.image}}"/>
-                                <span>
-                                    {{ supportedType.type }}
-                                </span>
-                            </span>
-                        </div>
-                    </section>
+                    </div>
                 </div>
             </div>
         </div>
